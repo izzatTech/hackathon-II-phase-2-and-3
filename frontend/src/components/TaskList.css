@@ -1,0 +1,118 @@
+/**
+ * CSS styles for the TaskList component.
+ */
+
+.task-list {
+  margin: 20px 0;
+  padding: 20px;
+}
+
+.task-list h2 {
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.task-items {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.task-item.pending {
+  border-left: 4px solid #ffc107;
+}
+
+.task-item.in_progress {
+  border-left: 4px solid #0d6efd;
+}
+
+.task-item.completed {
+  border-left: 4px solid #198754;
+  opacity: 0.8;
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.task-checkbox {
+  margin-right: 15px;
+  transform: scale(1.2);
+}
+
+.task-details {
+  flex-grow: 1;
+}
+
+.task-title {
+  margin: 0 0 5px 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.task-description {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.task-meta {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+  font-size: 0.8em;
+  color: #888;
+}
+
+.task-priority,
+.task-due,
+.task-created {
+  background-color: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.delete-task-btn {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.delete-task-btn:hover {
+  background-color: #f8d7da;
+  color: #dc3545;
+}
+
+.task-list-loading,
+.task-list-error {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.task-list-error {
+  color: #dc3545;
+}

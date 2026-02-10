@@ -1,0 +1,128 @@
+/**
+ * CSS styles for the AuthForms component.
+ */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+.auth-form-wrapper {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 450px;
+}
+
+.auth-form-wrapper h2 {
+  text-align: center;
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #0b5ed7;
+}
+
+.submit-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #f5c6cb;
+  text-align: center;
+}
+
+.form-switch {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-switch p {
+  margin: 0;
+  color: #666;
+}
+
+.switch-link {
+  background: none;
+  border: none;
+  color: #0d6efd;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+}
+
+.switch-link:hover {
+  color: #0a58ca;
+}
+
+@media (max-width: 480px) {
+  .auth-form-wrapper {
+    padding: 30px 20px;
+  }
+
+  .auth-form-wrapper h2 {
+    font-size: 1.5rem;
+  }
+}

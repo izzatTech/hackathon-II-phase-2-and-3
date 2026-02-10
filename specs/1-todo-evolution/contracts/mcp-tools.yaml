@@ -1,0 +1,344 @@
+# MCP Tool Contracts for Todo Application - Phase III (AI Agent Integration)
+
+## Overview
+These contracts define the MCP-compliant tools that the AI agent can use to interact with the task management system. Each tool corresponds to a specific action that preserves the stateless nature of the backend while allowing the AI agent to perform operations.
+
+## Tool Definitions
+
+### 1. Create Task Tool
+**Tool ID**: `task.create`
+
+**Description**: Creates a new task for the user
+
+**Request Schema**:
+```json
+{
+  "title": {
+    "type": "string",
+    "description": "Title of the task",
+    "minLength": 1,
+    "maxLength": 200
+  },
+  "description": {
+    "type": "string",
+    "description": "Detailed description of the task",
+    "maxLength": 2000,
+    "required": false
+  },
+  "priority": {
+    "type": "string",
+    "enum": ["low", "medium", "high", "critical"],
+    "description": "Priority level of the task",
+    "default": "medium"
+  },
+  "due_date": {
+    "type": "string",
+    "format": "date-time",
+    "description": "Due date for the task in ISO 8601 format",
+    "required": false
+  }
+}
+```
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "task": {
+    "type": "object",
+    "properties": {
+      "id": {"type": "string", "description": "Unique task identifier"},
+      "title": {"type": "string", "description": "Task title"},
+      "description": {"type": "string", "description": "Task description"},
+      "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+      "priority": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+      "user_id": {"type": "string", "description": "Owner of the task"},
+      "created_at": {"type": "string", "format": "date-time", "description": "Creation timestamp"},
+      "updated_at": {"type": "string", "format": "date-time", "description": "Last update timestamp"},
+      "due_date": {"type": "string", "format": "date-time", "description": "Due date if set"}
+    }
+  },
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+### 2. List Tasks Tool
+**Tool ID**: `task.list`
+
+**Description**: Retrieves a list of tasks for the user with optional filtering
+
+**Request Schema**:
+```json
+{
+  "status_filter": {
+    "type": "string",
+    "enum": ["pending", "in_progress", "completed"],
+    "description": "Filter tasks by status",
+    "required": false
+  },
+  "priority_filter": {
+    "type": "string",
+    "enum": ["low", "medium", "high", "critical"],
+    "description": "Filter tasks by priority",
+    "required": false
+  },
+  "limit": {
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 100,
+    "default": 50,
+    "description": "Maximum number of tasks to return",
+    "required": false
+  },
+  "offset": {
+    "type": "integer",
+    "minimum": 0,
+    "default": 0,
+    "description": "Offset for pagination",
+    "required": false
+  }
+}
+```
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "tasks": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "description": "Unique task identifier"},
+        "title": {"type": "string", "description": "Task title"},
+        "description": {"type": "string", "description": "Task description"},
+        "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+        "priority": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+        "user_id": {"type": "string", "description": "Owner of the task"},
+        "created_at": {"type": "string", "format": "date-time", "description": "Creation timestamp"},
+        "updated_at": {"type": "string", "format": "date-time", "description": "Last update timestamp"},
+        "due_date": {"type": "string", "format": "date-time", "description": "Due date if set"}
+      }
+    }
+  },
+  "total_count": {"type": "integer", "description": "Total number of tasks matching filters"},
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+### 3. Update Task Tool
+**Tool ID**: `task.update`
+
+**Description**: Updates an existing task with new information
+
+**Request Schema**:
+```json
+{
+  "task_id": {
+    "type": "string",
+    "description": "ID of the task to update",
+    "pattern": "^[a-zA-Z0-9-_]+$"
+  },
+  "updates": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "New title for the task",
+        "minLength": 1,
+        "maxLength": 200,
+        "required": false
+      },
+      "description": {
+        "type": "string",
+        "description": "New description for the task",
+        "maxLength": 2000,
+        "required": false
+      },
+      "status": {
+        "type": "string",
+        "enum": ["pending", "in_progress", "completed"],
+        "description": "New status for the task",
+        "required": false
+      },
+      "priority": {
+        "type": "string",
+        "enum": ["low", "medium", "high", "critical"],
+        "description": "New priority for the task",
+        "required": false
+      },
+      "due_date": {
+        "type": "string",
+        "format": "date-time",
+        "description": "New due date for the task",
+        "required": false
+      }
+    },
+    "minProperties": 1
+  }
+}
+```
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "task": {
+    "type": "object",
+    "properties": {
+      "id": {"type": "string", "description": "Unique task identifier"},
+      "title": {"type": "string", "description": "Task title"},
+      "description": {"type": "string", "description": "Task description"},
+      "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+      "priority": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+      "user_id": {"type": "string", "description": "Owner of the task"},
+      "created_at": {"type": "string", "format": "date-time", "description": "Creation timestamp"},
+      "updated_at": {"type": "string", "format": "date-time", "description": "Last update timestamp"},
+      "due_date": {"type": "string", "format": "date-time", "description": "Due date if set"}
+    }
+  },
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+### 4. Delete Task Tool
+**Tool ID**: `task.delete`
+
+**Description**: Deletes a task from the user's list
+
+**Request Schema**:
+```json
+{
+  "task_id": {
+    "type": "string",
+    "description": "ID of the task to delete",
+    "pattern": "^[a-zA-Z0-9-_]+$"
+  }
+}
+```
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+### 5. Complete Task Tool
+**Tool ID**: `task.complete`
+
+**Description**: Marks a task as completed
+
+**Request Schema**:
+```json
+{
+  "task_id": {
+    "type": "string",
+    "description": "ID of the task to mark as complete",
+    "pattern": "^[a-zA-Z0-9-_]+$"
+  }
+}
+```
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "task": {
+    "type": "object",
+    "properties": {
+      "id": {"type": "string", "description": "Unique task identifier"},
+      "title": {"type": "string", "description": "Task title"},
+      "description": {"type": "string", "description": "Task description"},
+      "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+      "priority": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+      "user_id": {"type": "string", "description": "Owner of the task"},
+      "created_at": {"type": "string", "format": "date-time", "description": "Creation timestamp"},
+      "updated_at": {"type": "string", "format": "date-time", "description": "Last update timestamp"},
+      "due_date": {"type": "string", "format": "date-time", "description": "Due date if set"}
+    }
+  },
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+### 6. Get User Profile Tool
+**Tool ID**: `user.get_profile`
+
+**Description**: Retrieves the current user's profile information
+
+**Request Schema**: {}
+
+**Response Schema**:
+```json
+{
+  "success": {
+    "type": "boolean",
+    "description": "Whether the operation succeeded"
+  },
+  "user": {
+    "type": "object",
+    "properties": {
+      "id": {"type": "string", "description": "Unique user identifier"},
+      "email": {"type": "string", "format": "email", "description": "User's email"},
+      "username": {"type": "string", "description": "User's display name"},
+      "created_at": {"type": "string", "format": "date-time", "description": "Account creation timestamp"}
+    }
+  },
+  "error": {
+    "type": "string",
+    "description": "Error message if operation failed"
+  }
+}
+```
+
+## MCP Server Endpoints
+
+The MCP server will expose these tools at the following endpoints:
+
+### Tools Discovery
+- **GET** `/v1/tools` - Returns a list of all available tools and their schemas
+
+### Tool Invocation
+- **POST** `/v1/tools/{tool_id}/call` - Invokes a specific tool with the provided arguments
+
+## Authentication
+All MCP tool calls must include an authentication token that verifies the AI agent's permission to act on behalf of a specific user. The token will be validated to ensure proper user isolation and prevent cross-user data access.
+
+## Error Handling
+MCP tools follow standard error patterns:
+- Validation errors return appropriate error messages
+- Permission errors prevent unauthorized access
+- Resource not found errors return 404-equivalent responses
+- Internal errors return generic error messages without system details

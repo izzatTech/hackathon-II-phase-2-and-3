@@ -1,0 +1,187 @@
+# API Contract for Todo Application - Phase II (Web Application)
+
+## Base URL
+`https://api.todoapp.com/v1` (production) or `http://localhost:8000/v1` (development)
+
+## Authentication
+All endpoints require JWT authentication in the Authorization header:
+```
+Authorization: Bearer {jwt_token}
+```
+
+## Core API Endpoints
+
+### User Management
+
+#### POST /users/register
+Register a new user account
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "username": "johndoe",
+    "password": "securePassword123"
+  }
+  ```
+- **Response**: 201 Created
+  ```json
+  {
+    "id": "uuid-string",
+    "email": "user@example.com",
+    "username": "johndoe",
+    "created_at": "2026-02-06T10:00:00Z"
+  }
+  ```
+
+#### POST /users/login
+Authenticate user and return JWT token
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "securePassword123"
+  }
+  ```
+- **Response**: 200 OK
+  ```json
+  {
+    "token": "jwt-token-string",
+    "user": {
+      "id": "uuid-string",
+      "email": "user@example.com",
+      "username": "johndoe"
+    }
+  }
+  ```
+
+### Task Management
+
+#### GET /tasks
+Retrieve user's tasks with optional filtering
+- **Query Parameters**:
+  - status: Filter by status (optional: pending, in_progress, completed)
+  - priority: Filter by priority (optional: low, medium, high, critical)
+  - limit: Number of tasks to return (default: 50, max: 100)
+  - offset: Offset for pagination (default: 0)
+- **Response**: 200 OK
+  ```json
+  {
+    "tasks": [
+      {
+        "id": "uuid-string",
+        "title": "Buy groceries",
+        "description": "Milk, bread, eggs",
+        "status": "pending",
+        "priority": "medium",
+        "user_id": "user-uuid",
+        "created_at": "2026-02-06T10:00:00Z",
+        "updated_at": "2026-02-06T10:00:00Z",
+        "due_date": "2026-02-08T00:00:00Z"
+      }
+    ],
+    "total_count": 1,
+    "limit": 50,
+    "offset": 0
+  }
+  ```
+
+#### POST /tasks
+Create a new task
+- **Request Body**:
+  ```json
+  {
+    "title": "Buy groceries",
+    "description": "Milk, bread, eggs",
+    "status": "pending",
+    "priority": "medium",
+    "due_date": "2026-02-08T00:00:00Z"
+  }
+  ```
+- **Response**: 201 Created
+  ```json
+  {
+    "id": "uuid-string",
+    "title": "Buy groceries",
+    "description": "Milk, bread, eggs",
+    "status": "pending",
+    "priority": "medium",
+    "user_id": "user-uuid",
+    "created_at": "2026-02-06T10:00:00Z",
+    "updated_at": "2026-02-06T10:00:00Z",
+    "due_date": "2026-02-08T00:00:00Z"
+  }
+  ```
+
+#### GET /tasks/{task_id}
+Retrieve a specific task
+- **Parameters**:
+  - task_id: UUID of the task to retrieve
+- **Response**: 200 OK
+  ```json
+  {
+    "id": "uuid-string",
+    "title": "Buy groceries",
+    "description": "Milk, bread, eggs",
+    "status": "pending",
+    "priority": "medium",
+    "user_id": "user-uuid",
+    "created_at": "2026-02-06T10:00:00Z",
+    "updated_at": "2026-02-06T10:00:00Z",
+    "due_date": "2026-02-08T00:00:00Z"
+  }
+  ```
+
+#### PUT /tasks/{task_id}
+Update an existing task
+- **Parameters**:
+  - task_id: UUID of the task to update
+- **Request Body** (all fields optional):
+  ```json
+  {
+    "title": "Updated task title",
+    "description": "Updated description",
+    "status": "in_progress",
+    "priority": "high",
+    "due_date": "2026-02-09T00:00:00Z"
+  }
+  ```
+- **Response**: 200 OK
+  ```json
+  {
+    "id": "uuid-string",
+    "title": "Updated task title",
+    "description": "Updated description",
+    "status": "in_progress",
+    "priority": "high",
+    "user_id": "user-uuid",
+    "created_at": "2026-02-06T10:00:00Z",
+    "updated_at": "2026-02-06T11:00:00Z",
+    "due_date": "2026-02-09T00:00:00Z"
+  }
+  ```
+
+#### DELETE /tasks/{task_id}
+Delete a task
+- **Parameters**:
+  - task_id: UUID of the task to delete
+- **Response**: 204 No Content
+
+## Error Responses
+
+All error responses follow this format:
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": {}
+  }
+}
+```
+
+Common error codes:
+- `UNAUTHORIZED`: Missing or invalid authentication token
+- `FORBIDDEN`: User doesn't have permission to access resource
+- `NOT_FOUND`: Requested resource doesn't exist
+- `VALIDATION_ERROR`: Request data doesn't meet validation requirements
+- `INTERNAL_ERROR`: Unexpected server error
